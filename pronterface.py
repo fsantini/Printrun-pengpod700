@@ -32,10 +32,10 @@ from serial import SerialException
 
 StringIO = cStringIO
 
-winsize = (800, 500)
+winsize = (800, 480)
 layerindex = 0
 if os.name == "nt":
-    winsize = (800, 530)
+    #winsize = (800, 530)
     try:
         import _winreg
     except:

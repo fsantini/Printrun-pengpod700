@@ -20,7 +20,7 @@ except:
     raise
 
 global buttonSize
-buttonSize = (70, 25)  # Define sizes for the buttons on top rows
+buttonSize = (90, 40)  # Define sizes for the buttons on top rows
 
 from printrun import gviz
 from printrun.xybuttons import XYButtons
@@ -172,7 +172,7 @@ class VizPane(wx.BoxSizer):
 
     def __init__(self, root):
         super(VizPane, self).__init__(wx.VERTICAL)
-        root.gviz = gviz.gviz(root.panel, (300, 300),
+        root.gviz = gviz.gviz(root.panel, (200,200),
             build_dimensions = root.build_dimensions_list,
             grid = (root.settings.preview_grid_step1, root.settings.preview_grid_step2),
             extrusion_width = root.settings.preview_extrusion_width)
@@ -198,7 +198,7 @@ class LogPane(wx.BoxSizer):
     def __init__(self, root):
         super(LogPane, self).__init__(wx.VERTICAL)
         root.lowerrsizer = self
-        root.logbox = wx.TextCtrl(root.panel, style = wx.TE_MULTILINE, size = (350,-1))
+        root.logbox = wx.TextCtrl(root.panel, style = wx.TE_MULTILINE, size = (200,-1))
         root.logbox.SetEditable(0)
         self.Add(root.logbox, 1, wx.EXPAND)
         lbrs = wx.BoxSizer(wx.HORIZONTAL)
@@ -246,6 +246,9 @@ class MainToolbar(wx.BoxSizer):
         root.platebtn = make_autosize_button(root.panel, _("Compose"), root.plate, _("Simple Plater System"), self)
         root.sdbtn = make_autosize_button(root.panel, _("SD"), root.sdmenu, _("SD Card Printing"), self)
         root.printerControls.append(root.sdbtn)
+        self.Hide(root.sdbtn)
+        self.Hide(root.platebtn)
+        
         root.printbtn = make_sized_button(root.panel, _("Print"), root.printfile, _("Start Printing Loaded File"), self)
         root.printbtn.Disable()
         root.pausebtn = make_sized_button(root.panel, _("Pause"), root.pause, _("Pause Current Print"), self)
@@ -264,8 +267,12 @@ class MainWindow(wx.Frame):
         self.uppersizer = MainToolbar(self)
         self.lowersizer = wx.BoxSizer(wx.HORIZONTAL)
         self.lowersizer.Add(LeftPane(self))
-        self.lowersizer.Add(VizPane(self), 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL)
-        self.lowersizer.Add(LogPane(self), 0, wx.EXPAND)
+        self.vizlogsizer = wx.BoxSizer(wx.VERTICAL)
+        vp = VizPane(self)
+        self.vizlogsizer.Add(vp) #, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL)
+        self.vizlogsizer.Hide(vp)
+        self.vizlogsizer.Add(LogPane(self)) #, 0, wx.EXPAND)
+        self.lowersizer.Add(self.vizlogsizer)
         self.mainsizer.Add(self.uppersizer)
         self.mainsizer.Add(self.lowersizer, 1, wx.EXPAND)
         self.panel.SetSizer(self.mainsizer)
