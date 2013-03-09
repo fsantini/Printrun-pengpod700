@@ -271,7 +271,7 @@ class VizPane(wx.BoxSizer):
 
     def __init__(self, root):
         super(VizPane, self).__init__(wx.VERTICAL)
-        root.gviz = gviz.gviz(root.panel, (200,200),
+        root.gviz = gviz.gviz(root.panel, (120,120),
             build_dimensions = root.build_dimensions_list,
             grid = (root.settings.preview_grid_step1, root.settings.preview_grid_step2),
             extrusion_width = root.settings.preview_extrusion_width)
@@ -289,8 +289,8 @@ class VizPane(wx.BoxSizer):
         root.gviz.Bind(wx.EVT_LEFT_DOWN, root.showwin)
         root.gwindow.Bind(wx.EVT_CLOSE, lambda x:root.gwindow.Hide())
         self.Add(root.gviz, 1, flag = wx.SHAPED)
-        cs = root.centersizer = wx.GridBagSizer()
-        self.Add(cs, 0, flag = wx.EXPAND)
+        #cs = root.centersizer = wx.GridBagSizer()
+        #self.Add(cs, 0, flag = wx.EXPAND)
 
 class LogPane(wx.BoxSizer):
 
@@ -319,6 +319,12 @@ class MainToolbar(wx.BoxSizer):
 
     def __init__(self, root):
         super(MainToolbar, self).__init__(wx.HORIZONTAL)
+        
+        imageFS = wx.Image("images/fullscreen.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        root.fullscreenbtn = wx.BitmapButton(root.panel, -1, bitmap=imageFS, size = (buttonSize[1], buttonSize[1]), style = wx.BU_EXACTFIT) #size is square, it's not a typo
+        root.fullscreenbtn.Bind(wx.EVT_BUTTON, root.fullscreen)
+	root.fullscreenbtn.SetToolTip(wx.ToolTip("Toggle full screen"))
+	self.Add(root.fullscreenbtn)
         root.rescanbtn = make_sized_button(root.panel, _("Port"), root.rescanports, _("Communication Settings\nClick to rescan ports"))
         self.Add(root.rescanbtn, 0, wx.TOP|wx.LEFT, 0)
 
@@ -354,7 +360,8 @@ class MainToolbar(wx.BoxSizer):
         root.printbtn.Disable()
         root.pausebtn = make_autosize_button(root.panel, _("Pause"), root.pause, _("Pause Current Print"), self)
         root.recoverbtn = make_autosize_button(root.panel, _("Recover"), root.recover, _("Recover previous Print"), self)
-        root.fullscreenbtn = make_autosize_button(root.panel, "FS", root.fullscreen, "Make full screen", self)
+     
+        #root.fullscreenbtn = make_autosize_button(root.panel, "FS", root.fullscreen, "Make full screen", self)
 
 class MainWindow(wx.Frame):
     
@@ -373,15 +380,17 @@ class MainWindow(wx.Frame):
         self.mainsizer = wx.BoxSizer(wx.VERTICAL)
         self.uppersizer = MainToolbar(self)
         self.lowersizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.lowersizer.Add(LeftPane(self))
+        self.leftpane = LeftPane(self)
+        self.lowersizer.Add(self.leftpane)
         self.hiddensizer = wx.BoxSizer(wx.HORIZONTAL)
         self.lowersizer.Add(self.hiddensizer)
         self.lowersizer.Hide(self.hiddensizer)
         #self.vizlogsizer = wx.BoxSizer(wx.VERTICAL)
         self.vizlogsizer = wx.GridBagSizer(hgap=5, vgap=5)
         vp = VizPane(self)
-        self.hiddensizer.Add(vp) #, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL)
-        self.hiddensizer.Hide(vp)
+        #self.hiddensizer.Add(vp) #, 1, wx.EXPAND|wx.ALIGN_CENTER_HORIZONTAL)
+        #self.hiddensizer.Hide(vp)
+        self.leftpane.Add(vp, pos=(2,6), span=(4,1))
         
         self.tempdisp = wx.StaticText(self,-1, "")
         self.graph = Graph(self, wx.ID_ANY)
@@ -391,6 +400,8 @@ class MainWindow(wx.Frame):
         self.vizlogsizer.Add(LogPane(self), pos=(1,0))
         #self.vizlogsizer.Add(self.kb, pos=(0,0))
         self.lowersizer.Add(self.vizlogsizer) #,wx.ID_ANY, wx.EXPAND)
+        self.centersizer = wx.GridBagSizer()
+        self.lowersizer.Add(self.centersizer)
         self.mainsizer.Add(self.uppersizer)
         self.mainsizer.Add(self.lowersizer) #, 1, wx.EXPAND)
         self.panel.SetSizer(self.mainsizer)
