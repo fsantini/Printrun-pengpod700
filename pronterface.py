@@ -111,7 +111,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         self.capture_skip = {}
         self.capture_skip_newline = False
         self.tempreport = ""
-        self.monitor = 0
+        self.monitor = 1
         self.f = None
         self.skeinp = None
         self.monitor_interval = 3
@@ -1021,7 +1021,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
                 self.webInterface.AddLog("Done monitoring.")
 
     def setmonitor(self, e):
-        self.monitor = self.monitorbox.GetValue()
+        self.monitor = True; #Monitor always self.monitorbox.GetValue()
         if self.monitor:
             wx.CallAfter(self.graph.StartPlotting, 1000)
         else:
@@ -1056,6 +1056,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         while self.statuscheck:
             string = ""
             wx.CallAfter(self.tempdisp.SetLabel, self.tempreport.strip().replace("ok ", ""))
+            #print(self.tempreport)
             try:
                 wx.CallAfter(self.graph.SetExtruder0Temperature, parse_temperature_report(self.tempreport, "T:"))
                 wx.CallAfter(self.graph.SetBedTemperature, parse_temperature_report(self.tempreport, "B:"))
