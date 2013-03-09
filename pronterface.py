@@ -85,6 +85,7 @@ class Tee(object):
 class PronterWindow(MainWindow, pronsole.pronsole):
     def __init__(self, filename = None, size = winsize):
         pronsole.pronsole.__init__(self)
+        self.size = size
         self.settings.build_dimensions = '200x200x100+0+0+0' #default build dimensions are 200x200x100 with 0, 0, 0 in the corner of the bed
         self.settings.last_bed_temperature = 0.0
         self.settings.last_file_path = ""
@@ -105,8 +106,6 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         os.putenv("UBUNTU_MENUPROXY", "0")
         MainWindow.__init__(self, None, title = _("Printer Interface"), size = size);
         self.SetIcon(wx.Icon(pixmapfile("P-face.ico"), wx.BITMAP_TYPE_ICO))
-        self.panel = wx.Panel(self,-1, size = size)
-
         self.statuscheck = False
         self.status_thread = None
         self.capture_skip = {}
@@ -120,7 +119,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         self.sentlines = Queue.Queue(30)
         self.cpbuttons = [
             SpecialButton(_("Motors off"), ("M84"), (250, 250, 250), None, 0, _("Switch all motors off")),
-            SpecialButton(_("Check temp"), ("M105"), (225, 200, 200), (2, 5), (1, 1), _("Check current hotend temperature")),
+            ##SpecialButton(_("Check temp"), ("M105"), (225, 200, 200), (2, 5), (1, 1), _("Check current hotend temperature")),
             SpecialButton(_("Extrude"), ("extrude"), (225, 200, 200), (4, 0), (1, 2), _("Advance extruder by set length")),
             SpecialButton(_("Reverse"), ("reverse"), (225, 200, 200), (5, 0), (1, 2), _("Reverse extruder by set length")),
         ]
@@ -128,7 +127,6 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         self.btndict = {}
         self.parse_cmdline(sys.argv[1:])
         self.build_dimensions_list = self.get_build_dimensions(self.settings.build_dimensions)
-        self.panel.SetBackgroundColour(self.settings.bgcolor)
         customdict = {}
         try:
             execfile(configfile("custombtn.txt"), customdict)
@@ -678,7 +676,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             #if i<4:
             #    ubs.Add(b)
             #else:
-            cs.Add(b, pos = ((i)/4, (i)%4))
+            cs.Add(b, pos = (i,0)) # add buttons in a column ((i)/4, (i)%4))
         self.mainsizer.Layout()
 
     def help_button(self):
@@ -1537,6 +1535,7 @@ if __name__ == '__main__':
     app = wx.App(False)
     main = PronterWindow()
     main.Show()
+    #main.ShowFullScreen(True)
     try:
         app.MainLoop()
     except:
