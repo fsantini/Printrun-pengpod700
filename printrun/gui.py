@@ -130,7 +130,7 @@ class KeyboardSizer(wx.GridBagSizer):
 	self.Add(self.N9btn, pos=(3,9))
 	
     def make_button(self, label):
-	button = wx.Button(self.parent.panel, -1, label, style=0, size = (30,30))
+	button = wx.Button(self.parent.panel, -1, label, style=0, size = (36,36))
 	button.Bind(wx.EVT_BUTTON, self.btn_press)
 	return button
 	
@@ -166,7 +166,7 @@ class LeftPane(wx.GridBagSizer):
         self.Add(self.xyzsizer, pos = (1, 0), span = (1, 8), flag = wx.ALIGN_CENTER)
         
         for i in root.cpbuttons:
-            btn = make_button(root.panel, i.label, root.procbutton, i.tooltip, style = wx.BU_EXACTFIT)
+            btn = make_button(root.panel, i.label, root.procbutton, i.tooltip, size = (-1,35), style = wx.BU_EXACTFIT)
             btn.SetBackgroundColour(i.background)
             btn.SetForegroundColour("black")
             btn.properties = i
@@ -195,7 +195,7 @@ class LeftPane(wx.GridBagSizer):
         self.Add(wx.StaticText(root.panel,-1, _("Heat:")), pos = (2, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
         htemp_choices = [root.temps[i]+" ("+i+")" for i in sorted(root.temps.keys(), key = lambda x:root.temps[x])]
 
-        root.settoff = make_button(root.panel, _("Off"), lambda e: root.do_settemp("off"), _("Switch Hotend Off"), size = (36,-1), style = wx.BU_EXACTFIT)
+        root.settoff = make_button(root.panel, _("Off"), lambda e: root.do_settemp("off"), _("Switch Hotend Off"), size = (45,40), style = wx.BU_EXACTFIT)
         root.printerControls.append(root.settoff)
         self.Add(root.settoff, pos = (2, 1), span = (1, 1))
 
@@ -207,14 +207,14 @@ class LeftPane(wx.GridBagSizer):
         root.htemp.Bind(wx.EVT_COMBOBOX, root.htemp_change)
 
         self.Add(root.htemp, pos = (2, 2), span = (1, 2))
-        root.settbtn = make_button(root.panel, _("Set"), root.do_settemp, _("Switch Hotend On"), size = (38, -1), style = wx.BU_EXACTFIT)
+        root.settbtn = make_button(root.panel, _("Set"), root.do_settemp, _("Switch Hotend On"), size = (45, 40), style = wx.BU_EXACTFIT)
         root.printerControls.append(root.settbtn)
         self.Add(root.settbtn, pos = (2, 4), span = (1, 1))
 
         self.Add(wx.StaticText(root.panel,-1, _("Bed:")), pos = (3, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT)
         btemp_choices = [root.bedtemps[i]+" ("+i+")" for i in sorted(root.bedtemps.keys(), key = lambda x:root.temps[x])]
 
-        root.setboff = make_button(root.panel, _("Off"), lambda e:root.do_bedtemp("off"), _("Switch Heated Bed Off"), size = (36,-1), style = wx.BU_EXACTFIT)
+        root.setboff = make_button(root.panel, _("Off"), lambda e:root.do_bedtemp("off"), _("Switch Heated Bed Off"), size = (45,40), style = wx.BU_EXACTFIT)
         root.printerControls.append(root.setboff)
         self.Add(root.setboff, pos = (3, 1), span = (1, 1))
 
@@ -226,7 +226,7 @@ class LeftPane(wx.GridBagSizer):
         root.btemp.Bind(wx.EVT_COMBOBOX, root.btemp_change)
         self.Add(root.btemp, pos = (3, 2), span = (1, 2))
 
-        root.setbbtn = make_button(root.panel, _("Set"), root.do_bedtemp, ("Switch Heated Bed On"), size = (38, -1), style = wx.BU_EXACTFIT)
+        root.setbbtn = make_button(root.panel, _("Set"), root.do_bedtemp, ("Switch Heated Bed On"), size = (45, 40), style = wx.BU_EXACTFIT)
         root.printerControls.append(root.setbbtn)
         self.Add(root.setbbtn, pos = (3, 4), span = (1, 1))
 
