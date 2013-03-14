@@ -297,7 +297,7 @@ class LogPane(wx.BoxSizer):
     def __init__(self, root):
         super(LogPane, self).__init__(wx.VERTICAL)
         root.lowerrsizer = self
-        root.logbox = wx.TextCtrl(root.panel, style = wx.TE_MULTILINE, size = (300,140))
+        root.logbox = wx.TextCtrl(root.panel, style = wx.TE_MULTILINE, size = (300,134))
         root.logbox.SetEditable(0)
         self.Add(root.logbox, 1, wx.EXPAND)
         root.kb = KeyboardSizer(root)
@@ -311,7 +311,7 @@ class LogPane(wx.BoxSizer):
         root.commandbox.histindex = 1
         #root.printerControls.append(root.commandbox)
         lbrs.Add(root.commandbox, 1)
-        root.sendbtn = make_button(root.panel, _("Send"), root.sendline, _("Send Command to Printer"), style = wx.BU_EXACTFIT, container = lbrs)
+        root.sendbtn = make_button(root.panel, _("Send"), root.sendline, _("Send Command to Printer"), style = wx.BU_EXACTFIT, container = lbrs, size=(-1, 36))
         #root.printerControls.append(root.sendbtn)
         self.Add(lbrs, 0, wx.EXPAND)
 
