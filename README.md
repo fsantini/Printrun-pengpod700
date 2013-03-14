@@ -1,3 +1,7 @@
+This is a modified version of Pronterface/Printrun that is optimized for small 7'' touchscreens. It is based on the original work by Kliment,
+and it includes GUI modifications and minor functionality fixes. It is not meant to be used for composing/slicing but mostly for loading
+GCode and controlling the printer.
+
 Printrun consists of printcore, pronsole and pronterface, and a small collection of helpful scripts.
 
   * printcore.py is a library that makes writing reprap hosts easy
