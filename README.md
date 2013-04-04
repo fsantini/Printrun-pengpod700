@@ -1,6 +1,18 @@
+# Notes specific to this version
+
 This is a modified version of Pronterface/Printrun that is optimized for small 7'' touchscreens. It is based on the original work by Kliment,
 and it includes GUI modifications and minor functionality fixes. It is not meant to be used for composing/slicing but mostly for loading
 GCode and controlling the printer.
+
+In the top-left corner of the interface, there is a button that makes the interface fullscreen for a better experience. This
+is the recommended mode of operation when access to the menus is not necessary.
+
+The compose button is removed, since this version is not intended for composing and slicing, but only for printer interface,
+using GCode produced elsewhere.
+
+A small touch keyboard is included for manual insertion of GCode.
+
+# Original README file
 
 Printrun consists of printcore, pronsole and pronterface, and a small collection of helpful scripts.
 
@@ -31,7 +43,6 @@ You can run Printrun directly from source, as there are no packages available ye
 `sudo apt-get install python-serial python-wxgtk2.8 python-pyglet`
 
 ### Fedora 15 and newer
-
 You can run Printrun directly from source, as there are no packages available yet. Fetch and install the dependencies using
 
 `sudo yum install pyserial wxpython pyglet`

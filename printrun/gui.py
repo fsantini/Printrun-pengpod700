@@ -178,12 +178,12 @@ class LeftPane(wx.GridBagSizer):
             else:
                 self.Add(btn, pos = i.pos, span = i.span)
 
-        root.xyfeedc = wx.SpinCtrl(root.panel,-1, str(root.settings.xy_feedrate), min = 0, max = 50000, size = (70,-1))
+        root.xyfeedc = wx.SpinCtrl(root.panel,-1, str(root.settings.xy_feedrate), min = 0, max = 50000, size = (70,35))
         root.xyfeedc.SetToolTip(wx.ToolTip("Set Maximum Speed for X & Y axes (mm/min)"))
         llts.Add(wx.StaticText(root.panel,-1, _("XY:")), flag = wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
         llts.Add(root.xyfeedc)
         llts.Add(wx.StaticText(root.panel,-1, _("mm/min   Z:")), flag = wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
-        root.zfeedc = wx.SpinCtrl(root.panel,-1, str(root.settings.z_feedrate), min = 0, max = 50000, size = (70,-1))
+        root.zfeedc = wx.SpinCtrl(root.panel,-1, str(root.settings.z_feedrate), min = 0, max = 50000, size = (70,35))
         root.zfeedc.SetToolTip(wx.ToolTip("Set Maximum Speed for Z axis (mm/min)"))
         llts.Add(root.zfeedc,)
 
@@ -249,13 +249,13 @@ class LeftPane(wx.GridBagSizer):
         if( '(' not in root.htemp.Value):
             root.htemp.SetValue(root.htemp.Value + ' (user)')
 
-        root.edist = wx.SpinCtrl(root.panel,-1, "5", min = 0, max = 1000, size = (60,-1))
+        root.edist = wx.SpinCtrl(root.panel,-1, "5", min = 0, max = 1000, size = (80,40))
         root.edist.SetBackgroundColour((225, 200, 200))
         root.edist.SetForegroundColour("black")
         self.Add(root.edist, pos = (4, 2), span = (1, 2))
         self.Add(wx.StaticText(root.panel,-1, _("mm")), pos = (4, 4), span = (1, 1))
         root.edist.SetToolTip(wx.ToolTip("Amount to Extrude or Retract (mm)"))
-        root.efeedc = wx.SpinCtrl(root.panel,-1, str(root.settings.e_feedrate), min = 0, max = 50000, size = (60,-1))
+        root.efeedc = wx.SpinCtrl(root.panel,-1, str(root.settings.e_feedrate), min = 0, max = 50000, size = (80,40))
         root.efeedc.SetToolTip(wx.ToolTip("Extrude / Retract speed (mm/min)"))
         root.efeedc.SetBackgroundColour((225, 200, 200))
         root.efeedc.SetForegroundColour("black")
