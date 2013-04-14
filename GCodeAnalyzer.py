@@ -66,14 +66,26 @@ class GCodeAnalyzer():
     self.hasHomeZ = False
      
       
+  def safeInt(self, val):
+    try:
+      return int(val)
+    except:
+      return 0
+      
+  def safeFloat(self, val):
+    try:
+      return float(val)
+    except:
+      return 0
+  
   # find a code in a gstring line   
   def findCode(self, gcode, codeStr):
-      pattern = re.compile(codeStr + "\\s*(-?[\d.]*)",re.I)
-      m=re.search(pattern, gcode)
-      if m == None:
-        return None
-      else:
-        return m.group(1)
+    pattern = re.compile(codeStr + "\\s*(-?[\d.]*)",re.I)
+    m=re.search(pattern, gcode)
+    if m == None:
+      return None
+    else:
+      return m.group(1)
     
   def Analyze(self, gcode):
     gcode = gcode[:gcode.find(";")].lstrip() # remove comments
@@ -82,7 +94,7 @@ class GCodeAnalyzer():
     code_m = self.findCode(gcode, "M")
     # we have a g_code
     if code_g != None:
-      code_g = int(code_g)
+      code_g = self.safeInt(code_g)
     
     #get movement codes
     if code_g == 0 or code_g == 1 or code_g == 2 or code_g == 3:
@@ -93,7 +105,7 @@ class GCodeAnalyzer():
       eChanged = False;
       code_f = self.findCode(gcode, "F")
       if code_f != None:
-        self.f=float(code_f)
+        self.f=self.safeFloat(code_f)
         
       code_x = self.findCode(gcode, "X")
       code_y = self.findCode(gcode, "Y")
@@ -101,21 +113,21 @@ class GCodeAnalyzer():
       code_e = self.findCode(gcode, "E")
 
       if self.relative:
-        if code_x != None: self.x += float(code_x)
-        if code_y != None: self.y += float(code_y)
-        if code_z != None: self.z += float(code_z)
+        if code_x != None: self.x += self.safeFloat(code_x)
+        if code_y != None: self.y += self.safeFloat(code_y)
+        if code_z != None: self.z += self.safeFloat(code_z)
         if code_e != None:
-          e = float(code_e)
+          e = self.safeFloat(code_e)
           if e != 0:
             eChanged = True
             self.e += e
       else:     
         #absolute coordinates
-        if code_x != None: self.x = self.xOffset + float(code_x)
-        if code_y != None: self.y = self.yOffset + float(code_y)
-        if code_z != None: self.z = self.zOffset + float(code_z)
+        if code_x != None: self.x = self.xOffset + self.safeFloat(code_x)
+        if code_y != None: self.y = self.yOffset + self.safeFloat(code_y)
+        if code_z != None: self.z = self.zOffset + self.safeFloat(code_z)
         if code_e != None:
-          e = float(code_e)
+          e = self.safeFloat(code_e)
           if self.eRelative:
             if e != 0:
               eChanged = True
@@ -190,20 +202,20 @@ class GCodeAnalyzer():
       code_z = self.findCode(gcode, "Z")
       code_e = self.findCode(gcode, "E")
       if code_x != None:
-        self.xOffset = self.x - float(code_x)
+        self.xOffset = self.x - self.safeFloat(code_x)
         self.x = self.xOffset
       if code_y != None:
-        self.yOffset = self.y - float(code_y)
+        self.yOffset = self.y - self.safeFloat(code_y)
         self.y = self.yOffset
       if code_z != None:
-        self.zOffset = self.z - float(code_z)
+        self.zOffset = self.z - self.safeFloat(code_z)
         self.z = self.zOffset
       if code_e != None:
-        self.xOffset = self.e - float(code_e)
+        self.xOffset = self.e - self.safeFloat(code_e)
         self.e = self.eOffset
       #End code_g != None
       if code_m != None:
-        code_m = int(code_m)
+        code_m = self.safeInt(code_m)
         if code_m == 82: self.eRelative = False
         elif code_m == 83: self.eRelative = True
         

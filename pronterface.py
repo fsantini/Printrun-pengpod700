@@ -1408,6 +1408,10 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             self.recvlisteners+=[self.uploadtrigger]
 
     def pause(self, event):
+        # disable now, re-enable later
+        wx.CallAfter(self.pausebtn.Disable)
+        # give "pause" sime time to execute the pending moves before reenabling it
+        threading.Timer(10.0, self.pausebtn.Enable).start()
         print _("Paused.")
         if not self.paused:
             if self.sdprinting:
@@ -1422,6 +1426,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             #self.p.runSmallScript(self.pauseScript)
             self.extra_print_time += int(time.time() - self.starttime)
             wx.CallAfter(self.pausebtn.SetLabel, _("Resume"))
+            #wx.CallAfter(self.pausebtn.Enable)
         else:
             self.paused = False
             if self.sdprinting:
@@ -1429,6 +1434,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             else:
                 self.p.resume()
             wx.CallAfter(self.pausebtn.SetLabel, _("Pause"))
+            #
 
     def sdprintfile(self, event):
         self.on_startprint()
