@@ -26,6 +26,7 @@ from printrun import gviz
 from printrun.xybuttons import XYButtons
 from printrun.zbuttons import ZButtons
 from printrun.graph import Graph
+from printrun_utils import imagefile
 
 def make_button(parent, label, callback, tooltip, container = None, size = wx.DefaultSize, style = 0):
     button = wx.Button(parent, -1, label, style = style, size = size)
@@ -320,7 +321,7 @@ class MainToolbar(wx.BoxSizer):
     def __init__(self, root):
         super(MainToolbar, self).__init__(wx.HORIZONTAL)
         
-        imageFS = wx.Image("images/fullscreen.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        imageFS = wx.Image(imagefile('fullscreen.png'), wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         root.fullscreenbtn = wx.BitmapButton(root.panel, -1, bitmap=imageFS, size = (buttonSize[1], buttonSize[1]), style = wx.BU_EXACTFIT) #size is square, it's not a typo
         root.fullscreenbtn.Bind(wx.EVT_BUTTON, root.fullscreen)
 	root.fullscreenbtn.SetToolTip(wx.ToolTip("Toggle full screen"))
