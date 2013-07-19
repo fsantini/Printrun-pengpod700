@@ -26,6 +26,7 @@ from printrun import gviz
 from printrun.xybuttons import XYButtons
 from printrun.zbuttons import ZButtons
 from printrun.graph import Graph
+from printrun_utils import imagefile
 
 def make_button(parent, label, callback, tooltip, container = None, size = wx.DefaultSize, style = 0):
     button = wx.Button(parent, -1, label, style = style, size = size)
@@ -297,7 +298,14 @@ class LogPane(wx.BoxSizer):
     def __init__(self, root):
         super(LogPane, self).__init__(wx.VERTICAL)
         root.lowerrsizer = self
-        root.logbox = wx.TextCtrl(root.panel, style = wx.TE_MULTILINE, size = (300,134))
+        endjobSizer = wx.BoxSizer(wx.HORIZONTAL)
+        endjobSizer.Add(wx.StaticText(parent=root.panel, label="End Job: "))
+        root.endjobBedOff = wx.CheckBox(root.panel, label="Bed off")
+        endjobSizer.Add(root.endjobBedOff)
+        root.endjobHeatOff = wx.CheckBox(root.panel, label="Heat off")
+        endjobSizer.Add(root.endjobHeatOff)
+        self.Add(endjobSizer,0);
+        root.logbox = wx.TextCtrl(root.panel, style = wx.TE_MULTILINE, size = (300,120))
         root.logbox.SetEditable(0)
         self.Add(root.logbox, 1, wx.EXPAND)
         root.kb = KeyboardSizer(root)
@@ -320,7 +328,7 @@ class MainToolbar(wx.BoxSizer):
     def __init__(self, root):
         super(MainToolbar, self).__init__(wx.HORIZONTAL)
         
-        imageFS = wx.Image("images/fullscreen.png", wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        imageFS = wx.Image(imagefile('fullscreen.png'), wx.BITMAP_TYPE_ANY).ConvertToBitmap()
         root.fullscreenbtn = wx.BitmapButton(root.panel, -1, bitmap=imageFS, size = (buttonSize[1], buttonSize[1]), style = wx.BU_EXACTFIT) #size is square, it's not a typo
         root.fullscreenbtn.Bind(wx.EVT_BUTTON, root.fullscreen)
 	root.fullscreenbtn.SetToolTip(wx.ToolTip("Toggle full screen"))

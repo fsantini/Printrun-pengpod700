@@ -226,12 +226,19 @@ class PronterWindow(MainWindow, pronsole.pronsole):
 
             self.p.runSmallScript(self.endScript)
             
+            if self.endjobBedOff.GetValue():
+              self.do_bedtemp("off")
+            
+            if self.endjobHeatOff.GetValue():
+              self.do_settemp("off")
+            
             param = self.settings.final_command
             if not param:
                 return
             import shlex
             pararray = [i.replace("$s", str(self.filename)).replace("$t", format_duration(print_duration)).encode() for i in shlex.split(param.replace("\\", "\\\\").encode())]
             self.finalp = subprocess.Popen(pararray, stderr = subprocess.STDOUT, stdout = subprocess.PIPE)
+
 
     def online(self):
         print _("Printer is now online.")
