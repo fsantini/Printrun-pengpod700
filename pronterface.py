@@ -223,6 +223,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             print "and took: " + format_duration(print_duration)
             wx.CallAfter(self.pausebtn.Disable)
             wx.CallAfter(self.printbtn.SetLabel, _("Print"))
+            wx.CallAfter(self.xyzsizer.addxyz)
 
             self.p.runSmallScript(self.endScript)
             
@@ -1296,7 +1297,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         else:
             self._do_load(l)
 
-    def loadfile(self, event, filename = None):
+    def loadfile(self, event, filename = None):     
         if self.skeining and self.skeinp is not None:
             self.skeinp.terminate()
             return
@@ -1386,6 +1387,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         wx.CallAfter(self.pausebtn.SetLabel, _("Pause"))
         wx.CallAfter(self.pausebtn.Enable)
         wx.CallAfter(self.printbtn.SetLabel, _("Restart"))
+        wx.CallAfter(self.xyzsizer.addStop)
 
     def endupload(self):
         self.p.send_now("M29 ")
@@ -1433,6 +1435,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             #self.p.runSmallScript(self.pauseScript)
             self.extra_print_time += int(time.time() - self.starttime)
             wx.CallAfter(self.pausebtn.SetLabel, _("Resume"))
+            wx.CallAfter(self.xyzsizer.addxyz)
             #wx.CallAfter(self.pausebtn.Enable)
         else:
             self.paused = False
@@ -1441,6 +1444,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             else:
                 self.p.resume()
             wx.CallAfter(self.pausebtn.SetLabel, _("Pause"))
+            wx.CallAfter(self.xyzsizer.addStop)
             #
 
     def sdprintfile(self, event):
@@ -1526,6 +1530,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         wx.CallAfter(self.printbtn.Disable)
         wx.CallAfter(self.pausebtn.Disable)
         wx.CallAfter(self.recoverbtn.Disable)
+        wx.CallAfter(self.xyzsizer.addxyz)
         for i in self.printerControls:
             wx.CallAfter(i.Disable)
 
@@ -1546,16 +1551,20 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         print _("Reset.")
         dlg = wx.MessageDialog(self, _("Are you sure you want to reset the printer?"), _("Reset?"), wx.YES|wx.NO)
         if dlg.ShowModal() == wx.ID_YES:
-            self.p.reset()
-            self.sethotendgui(0)
-            self.setbedgui(0)
-            self.p.printing = 0
-            wx.CallAfter(self.printbtn.SetLabel, _("Print"))
-            if self.paused:
-                self.p.paused = 0
-                wx.CallAfter(self.pausebtn.SetLabel, _("Pause"))
-                self.paused = 0
-
+          self.do_reset(event)
+            
+    def do_reset(self, event):
+        self.p.reset()
+        self.sethotendgui(0)
+        self.setbedgui(0)
+        self.p.printing = 0
+        wx.CallAfter(self.printbtn.SetLabel, _("Print"))
+        wx.CallAfter(self.xyzsizer.addxyz)
+        if self.paused:
+            self.p.paused = 0
+            wx.CallAfter(self.pausebtn.SetLabel, _("Pause"))
+            self.paused = 0
+                
     def get_build_dimensions(self, bdim):
         import re
         # a string containing up to six numbers delimited by almost anything
