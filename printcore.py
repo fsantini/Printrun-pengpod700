@@ -351,7 +351,7 @@ class printcore():
     #now only "pause" is implemented as host command
     def processHostCommand(self, command):
         command = command.lstrip()
-        if command.startswith(";@pause"):
+        if command.startswith(";@pause") or command.startswith("@pause"):
           if self.pronterface != None:
             self.pronterface.pause(None)
           else:

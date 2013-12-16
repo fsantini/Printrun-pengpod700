@@ -84,128 +84,128 @@ class GCodeAnalyzer():
     if code_g != None:
       code_g = int(code_g)
     
-    #get movement codes
-    if code_g == 0 or code_g == 1 or code_g == 2 or code_g == 3:
-      self.lastX = self.x
-      self.lastY = self.y
-      self.lastZ = self.z
-      self.lastE = self.e
-      eChanged = False;
-      code_f = self.findCode(gcode, "F")
-      if code_f != None:
-        self.f=float(code_f)
-        
-      code_x = self.findCode(gcode, "X")
-      code_y = self.findCode(gcode, "Y")
-      code_z = self.findCode(gcode, "Z")
-      code_e = self.findCode(gcode, "E")
+      #get movement codes
+      if code_g == 0 or code_g == 1 or code_g == 2 or code_g == 3:
+        self.lastX = self.x
+        self.lastY = self.y
+        self.lastZ = self.z
+        self.lastE = self.e
+        eChanged = False;
+        code_f = self.findCode(gcode, "F")
+        if code_f != None:
+          self.f=float(code_f)
+          
+        code_x = self.findCode(gcode, "X")
+        code_y = self.findCode(gcode, "Y")
+        code_z = self.findCode(gcode, "Z")
+        code_e = self.findCode(gcode, "E")
 
-      if self.relative:
-        if code_x != None: self.x += float(code_x)
-        if code_y != None: self.y += float(code_y)
-        if code_z != None: self.z += float(code_z)
-        if code_e != None:
-          e = float(code_e)
-          if e != 0:
-            eChanged = True
-            self.e += e
-      else:     
-        #absolute coordinates
-        if code_x != None: self.x = self.xOffset + float(code_x)
-        if code_y != None: self.y = self.yOffset + float(code_y)
-        if code_z != None: self.z = self.zOffset + float(code_z)
-        if code_e != None:
-          e = float(code_e)
-          if self.eRelative:
+        if self.relative:
+          if code_x != None: self.x += float(code_x)
+          if code_y != None: self.y += float(code_y)
+          if code_z != None: self.z += float(code_z)
+          if code_e != None:
+            e = float(code_e)
             if e != 0:
               eChanged = True
               self.e += e
-          else:
-          # e is absolute. Is it changed?
-            if self.e != self.eOffset + e:
-              eChanged = True
-              self.e = self.eOffset + e
-      #limit checking
-      if self.x < self.minX: self.x = self.minX
-      if self.y < self.minY: self.y = self.minY
-      if self.z < self.minZ: self.z = self.minZ
-      
-      if self.x > self.maxX: self.x = self.maxX
-      if self.y > self.maxY: self.y = self.maxY
-      if self.z > self.maxZ: self.z = self.maxZ
-      #Repetier has a bunch of limit-checking code here and time calculations: we are leaving them for now
-    elif code_g == 28 or code_g == 161:
-      self.lastX = self.x
-      self.lastY = self.y
-      self.lastZ = self.z
-      self.lastE = self.e
-      code_x = self.findCode(gcode, "X")
-      code_y = self.findCode(gcode, "Y")
-      code_z = self.findCode(gcode, "Z")
-      code_e = self.findCode(gcode, "E")
-      homeAll = False
-      if code_x == None and code_y == None and code_z == None: homeAll = True
-      if code_x != None or homeAll:
-	self.hasHomeX = True
-        self.xOffset = 0
-        self.x = self.homeX
-      if code_y != None or homeAll:
-	self.hasHomeY = True
-        self.yOffset = 0
-        self.y = self.homeY
-      if code_z != None or homeAll:
-	self.hasHomeZ = True
-        self.zOffset = 0
-        self.z = self.homeZ
-      if code_e != None:
-        self.eOffset = 0
-        self.e = 0
-    elif code_g == 162:
-      self.lastX = self.x
-      self.lastY = self.y
-      self.lastZ = self.z
-      self.lastE = self.e
-      code_x = self.findCode(gcode, "X")
-      code_y = self.findCode(gcode, "Y")
-      code_z = self.findCode(gcode, "Z")
-      homeAll = False
-      if code_x == None and code_y == None and code_z == None: homeAll = True
-      if code_x != None or homeAll:
-	self.hasHomeX = True
-        self.xOffset = 0
-        self.x = self.maxX
-      if code_y != None or homeAll:
-	self.hasHomeY = True
-        self.yOffset = 0
-        self.y = self.maxY
-      if code_z != None or homeAll:
-	self.hasHomeZ = True
-        self.zOffset = 0
-        self.z = self.maxZ
-    elif code_g == 90: self.relative = False
-    elif code_g == 91: self.relative = True
-    elif code_g == 92:
-      code_x = self.findCode(gcode, "X")
-      code_y = self.findCode(gcode, "Y")
-      code_z = self.findCode(gcode, "Z")
-      code_e = self.findCode(gcode, "E")
-      if code_x != None:
-        self.xOffset = self.x - float(code_x)
-        self.x = self.xOffset
-      if code_y != None:
-        self.yOffset = self.y - float(code_y)
-        self.y = self.yOffset
-      if code_z != None:
-        self.zOffset = self.z - float(code_z)
-        self.z = self.zOffset
-      if code_e != None:
-        self.xOffset = self.e - float(code_e)
-        self.e = self.eOffset
-      #End code_g != None
-      if code_m != None:
-        code_m = int(code_m)
-        if code_m == 82: self.eRelative = False
-        elif code_m == 83: self.eRelative = True
+        else:     
+          #absolute coordinates
+          if code_x != None: self.x = self.xOffset + float(code_x)
+          if code_y != None: self.y = self.yOffset + float(code_y)
+          if code_z != None: self.z = self.zOffset + float(code_z)
+          if code_e != None:
+            e = float(code_e)
+            if self.eRelative:
+              if e != 0:
+                eChanged = True
+                self.e += e
+            else:
+            # e is absolute. Is it changed?
+              if self.e != self.eOffset + e:
+                eChanged = True
+                self.e = self.eOffset + e
+        #limit checking
+        if self.x < self.minX: self.x = self.minX
+        if self.y < self.minY: self.y = self.minY
+        if self.z < self.minZ: self.z = self.minZ
+        
+        if self.x > self.maxX: self.x = self.maxX
+        if self.y > self.maxY: self.y = self.maxY
+        if self.z > self.maxZ: self.z = self.maxZ
+        #Repetier has a bunch of limit-checking code here and time calculations: we are leaving them for now
+      elif code_g == 28 or code_g == 161:
+        self.lastX = self.x
+        self.lastY = self.y
+        self.lastZ = self.z
+        self.lastE = self.e
+        code_x = self.findCode(gcode, "X")
+        code_y = self.findCode(gcode, "Y")
+        code_z = self.findCode(gcode, "Z")
+        code_e = self.findCode(gcode, "E")
+        homeAll = False
+        if code_x == None and code_y == None and code_z == None: homeAll = True
+        if code_x != None or homeAll:
+          self.hasHomeX = True
+          self.xOffset = 0
+          self.x = self.homeX
+        if code_y != None or homeAll:
+          self.hasHomeY = True
+          self.yOffset = 0
+          self.y = self.homeY
+        if code_z != None or homeAll:
+          self.hasHomeZ = True
+          self.zOffset = 0
+          self.z = self.homeZ
+        if code_e != None:
+          self.eOffset = 0
+          self.e = 0
+      elif code_g == 162:
+        self.lastX = self.x
+        self.lastY = self.y
+        self.lastZ = self.z
+        self.lastE = self.e
+        code_x = self.findCode(gcode, "X")
+        code_y = self.findCode(gcode, "Y")
+        code_z = self.findCode(gcode, "Z")
+        homeAll = False
+        if code_x == None and code_y == None and code_z == None: homeAll = True
+        if code_x != None or homeAll:
+          self.hasHomeX = True
+          self.xOffset = 0
+          self.x = self.maxX
+        if code_y != None or homeAll:
+          self.hasHomeY = True
+          self.yOffset = 0
+          self.y = self.maxY
+        if code_z != None or homeAll:
+          self.hasHomeZ = True
+          self.zOffset = 0
+          self.z = self.maxZ
+      elif code_g == 90: self.relative = False
+      elif code_g == 91: self.relative = True
+      elif code_g == 92:
+        code_x = self.findCode(gcode, "X")
+        code_y = self.findCode(gcode, "Y")
+        code_z = self.findCode(gcode, "Z")
+        code_e = self.findCode(gcode, "E")
+        if code_x != None:
+          self.xOffset = self.x - float(code_x)
+          self.x = self.xOffset
+        if code_y != None:
+          self.yOffset = self.y - float(code_y)
+          self.y = self.yOffset
+        if code_z != None:
+          self.zOffset = self.z - float(code_z)
+          self.z = self.zOffset
+        if code_e != None:
+          self.xOffset = self.e - float(code_e)
+          self.e = self.eOffset
+        #End code_g != None
+    if code_m != None:
+      code_m = int(code_m)
+      if code_m == 82: self.eRelative = False
+      elif code_m == 83: self.eRelative = True
         
   def print_status(self):
     attrs = vars(self)
