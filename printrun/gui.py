@@ -1,3 +1,4 @@
+
 # This file is part of the Printrun suite.
 #
 # Printrun is free software: you can redistribute it and/or modify
@@ -151,11 +152,35 @@ class XYZControlsSizer(wx.GridBagSizer):
 
     def __init__(self, root):
         super(XYZControlsSizer, self).__init__()
+        self.root = root;
         root.xyb = XYButtons(root.panel, root.moveXY, root.homeButtonClicked, root.spacebarAction, root.settings.bgcolor)
-        self.Add(root.xyb, pos = (0, 1), flag = wx.ALIGN_CENTER)
         root.zb = ZButtons(root.panel, root.moveZ, root.settings.bgcolor)
-        self.Add(root.zb, pos = (0, 2), flag = wx.ALIGN_CENTER)
+        imageStop = wx.Image(imagefile('stop_btn.png'), wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+        root.stopBtn = wx.BitmapButton(root.panel, -1, bitmap=imageStop, size = (248,248), style = wx.BU_EXACTFIT)
+        root.stopBtn.Bind(wx.EVT_BUTTON, root.do_reset)
+        root.stopBtn.SetToolTip(wx.ToolTip("Stop!"))
+        #root.stopBtn.Hide()
+        self.addStop()
+        self.addxyz()
         wx.CallAfter(root.xyb.SetFocus)
+        
+    def addxyz(self):
+        self.Clear()
+        self.root.stopBtn.Hide()
+        self.root.xyb.Show()
+        self.root.zb.Show()
+        self.Add(self.root.xyb, pos = (0, 1), flag = wx.ALIGN_CENTER)
+        self.Add(self.root.zb, pos = (0, 2), flag = wx.ALIGN_CENTER)
+        self.Layout()
+        
+    def addStop(self):
+        self.Clear()
+        self.root.xyb.Hide()
+        self.root.zb.Hide()
+        self.root.stopBtn.Show()
+        self.Add(self.root.stopBtn, pos = (0, 1), flag = wx.ALIGN_CENTER)
+        self.Layout()
+        
 
 class LeftPane(wx.GridBagSizer):
 
@@ -164,6 +189,7 @@ class LeftPane(wx.GridBagSizer):
         llts = wx.BoxSizer(wx.HORIZONTAL)
         self.Add(llts, pos = (0, 0), span = (1, 9))
         self.xyzsizer = XYZControlsSizer(root)
+        root.xyzsizer = self.xyzsizer
         self.Add(self.xyzsizer, pos = (1, 0), span = (1, 8), flag = wx.ALIGN_CENTER)
         
         for i in root.cpbuttons:
