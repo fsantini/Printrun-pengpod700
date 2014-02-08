@@ -89,7 +89,8 @@ class GCodeAnalyzer():
     
   def Analyze(self, gcode):
     if gcode.find(";") >= 0:
-      gcode = gcode[:gcode.find(";")].lstrip() # remove comments
+      gcode = gcode[:gcode.find(";")] # remove comments
+    gcode = gcode.lstrip();
     if gcode.startswith("@"): return # code is a host command
     code_g = self.findCode(gcode, "G")
     code_m = self.findCode(gcode, "M")
@@ -214,7 +215,6 @@ class GCodeAnalyzer():
         if code_e != None:
           self.xOffset = self.e - self.safeFloat(code_e)
           self.e = self.eOffset
-        #End code_g != None
     if code_m != None:
       code_m = self.safeInt(code_m)
       if code_m == 82: self.eRelative = False

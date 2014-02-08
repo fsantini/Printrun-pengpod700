@@ -378,7 +378,7 @@ class printcore():
         if self.printing and self.queueindex < len(self.mainqueue):
             tline = self.mainqueue[self.queueindex]
             #check for host command
-            if tline.lstrip().startswith(";@") or if tline.lstrip().startswith("@"):
+            if tline.lstrip().startswith(";@") or tline.lstrip().startswith("@"):
               #it is a host command: pop it from the list
               self.mainqueue.pop(self.queueindex)
               self.processHostCommand(tline)
