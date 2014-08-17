@@ -176,6 +176,28 @@ class PronterWindow(MainWindow, pronsole.pronsole):
 
         except:
             pass
+        self.filaments = []
+        try:
+            execfile(configfile('filaments.txt'), customdict)
+            if len(customdict['filaments']):
+                print "filaments found"
+                self.filaments = customdict['filaments']
+        except:
+            print "no filament file found"
+            pass
+        self.filament = None
+        
+        self.levelingpoints = []
+        
+        try:
+            execfile(configfile('levelingpoints.txt'), customdict)
+            if len(customdict['levelingpoints']):
+                print "leveling points found"
+                self.levelingpoints = customdict['levelingpoints']
+        except:
+            print "no leveling points found"
+            pass
+        
         self.popmenu()
         self.createGui()
         self.t = Tee(self.catchprint)
@@ -211,6 +233,80 @@ class PronterWindow(MainWindow, pronsole.pronsole):
                 print _("CherryPy is not installed. Web Interface Disabled.")
         if self.filename is not None:
             self.do_load(self.filename)
+
+    def setFilament(self, filament):
+        self.filament = filament
+        if filament is None:
+            print "resetting filament"
+            self.onecmd('M200 D0') #reset filament
+            return
+        cmd = 'M200 D' + str(filament['diameter']) + ' S' + str(filament['temperature']) + ' B' + str(filament['bedtemp']) + ' F' +str(filament['flowmult'])
+        print cmd
+        self.onecmd(cmd)
+
+    def do_levelBed(self, e):
+        if len(self.levelingpoints) == 0:
+            print "Bed leveling points not defined"
+            return
+        self.onecmd('home')
+        
+        def moveTo(x,y):
+            self.p.send_now('G90') # absolute positioning
+            self.p.send_now('G0 Z10 F' + str(self.p.z_feedrate))
+            self.p.send_now('G0 X' + str(x) + ' Y' + str(y) + ' F' + str(self.p.xy_feedrate))
+            #print 'G0 X' + str(x) + ' Y' + str(y) + ' F' + str(self.p.xy_feedrate)
+            self.p.send_now('G0 Z0 F' + str(self.p.z_feedrate))
+        
+        dialog = wx.Dialog(self, -1, "Bed leveling", size = (260, 480))
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        btn = wx.Button(dialog, -1, 'Next point', size = (260, 80))
+        
+        def doNextPoint(e):
+            if doNextPoint.currentPoint >= len(self.levelingpoints):
+                dialog.EndModal(0)
+                return
+            moveTo(self.levelingpoints[doNextPoint.currentPoint]['X'], self.levelingpoints[doNextPoint.currentPoint]['Y'])
+            doNextPoint.currentPoint += 1
+            
+        doNextPoint.currentPoint = 0
+            
+        btn.Bind(wx.EVT_BUTTON, doNextPoint)
+        dialog.ShowModal()
+        dialog.Destroy()
+        
+    def help_levelBed():
+        print "Moves the head to assist in bed leveling"
+        
+
+            
+        
+
+    def do_selectFilament(self, e):
+        dialog = wx.Dialog(self, -1, "Choose filament", size = (260, 480))
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        fbtn = wx.Button(dialog, -1, 'Undefined', size = (260, 30))
+        fbtn.Bind(wx.EVT_BUTTON, lambda e: dialog.EndModal(0), self.setFilament(None))
+        vbox.Add(fbtn)
+        for f in self.filaments:
+            fbtn = wx.Button(dialog, -1, f['name'], size = (260, 30))
+            fbtn.SetBackgroundColour(f['color'])
+            rr, gg, bb = fbtn.GetBackgroundColour().Get()
+            if 0.3*rr+0.59*gg+0.11*bb < 70:
+                b.SetForegroundColour("#ffffff")
+            
+            def btnCallback(event, filament = f):
+                self.setFilament(filament)
+                dialog.EndModal(0)
+                
+            fbtn.Bind(wx.EVT_BUTTON, btnCallback)
+            vbox.Add(fbtn)
+        dialog.SetSizer(vbox)
+        dialog.Centre()
+        dialog.ShowModal()
+        dialog.Destroy()
+        
+    def help_selectFilament(self):
+        print "choose filament"
 
     def startcb(self):
         self.starttime = time.time()
@@ -1365,6 +1461,8 @@ class PronterWindow(MainWindow, pronsole.pronsole):
 
     def printfile(self, event):
         self.extra_print_time = 0
+        # set appropriate filament before printing (maybe printer was offline till now)
+        self.setFilament(self.filament)
         if self.paused:
             self.p.paused = 0
             self.paused = 0
