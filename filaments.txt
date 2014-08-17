@@ -1,0 +1,3 @@
+filaments = [
+{ 'name': 'ABS', 'color': 'green', 'bedtemp': 100, 'flowmult': .85, 'diameter': 1.65, 'temperature': 215 }
+]
