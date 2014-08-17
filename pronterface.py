@@ -292,7 +292,7 @@ class PronterWindow(MainWindow, pronsole.pronsole):
             fbtn.SetBackgroundColour(f['color'])
             rr, gg, bb = fbtn.GetBackgroundColour().Get()
             if 0.3*rr+0.59*gg+0.11*bb < 70:
-                b.SetForegroundColour("#ffffff")
+                fbtn.SetForegroundColour("#ffffff")
             
             def btnCallback(event, filament = f):
                 self.setFilament(filament)
