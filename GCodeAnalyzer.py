@@ -213,12 +213,13 @@ class GCodeAnalyzer():
           self.zOffset = self.z - self.safeFloat(code_z)
           self.z = self.zOffset
         if code_e != None:
-          self.xOffset = self.e - self.safeFloat(code_e)
+          self.eOffset = self.e - self.safeFloat(code_e)
           self.e = self.eOffset
     if code_m != None:
       code_m = self.safeInt(code_m)
       if code_m == 82: self.eRelative = False
       elif code_m == 83: self.eRelative = True
+#    self.print_status()
         
   def print_status(self):
     attrs = vars(self)
