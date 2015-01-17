@@ -262,7 +262,11 @@ class printcore():
         self.pauseE = self.analyzer.e-self.analyzer.eOffset;
         self.pauseF = self.analyzer.f;
         self.pauseRelative = self.analyzer.relative;
-        
+        print "Position before pause"
+        print self.pauseX, self.pauseY, self.pauseZ
+        print "offsets"
+        print self.analyzer.xOffset, self.analyzer.yOffset, self.analyzer.zOffset
+
         
 
     def resume(self):
@@ -272,6 +276,9 @@ class printcore():
         if self.paused:
           #restores the status
           self.send_now("G90") # go to absolute coordinates
+          
+          print "I'm at"
+          print self.analyzer.x-self.analyzer.xOffset, self.analyzer.y-self.analyzer.yOffset, self.analyzer.z-self.analyzer.zOffset;
         
           xyFeedString = ""
           zFeedString = ""
