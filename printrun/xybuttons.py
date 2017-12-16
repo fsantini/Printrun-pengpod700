@@ -55,12 +55,13 @@ class XYButtons(BufferedCanvas):
         # Remember the last clicked buttons, so we can repeat when spacebar pressed
         self.lastMove = None
         self.lastCorner = None
+        
+        BufferedCanvas.__init__(self, parent, ID, size=self.bg_bmp.GetSize())
 
         self.bgcolor = wx.Colour()
         self.bgcolor.SetFromName(bgcolor)
         self.bgcolormask = wx.Colour(self.bgcolor.Red(), self.bgcolor.Green(), self.bgcolor.Blue(), 128)
 
-        BufferedCanvas.__init__(self, parent, ID)
         self.SetSize(self.bg_bmp.GetSize())
 
         # Set up mouse and keyboard event capture

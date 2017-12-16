@@ -28,7 +28,7 @@ class Graph(BufferedCanvas):
         style = style | wx.NO_FULL_REPAINT_ON_RESIZE
         #call super function
         #super(Graph, self).__init__(parent, id, pos, size, style)
-        BufferedCanvas.__init__(self, parent, id)
+        BufferedCanvas.__init__(self, parent, id, size = (300, 100))
 
         self.SetSize(wx.Size(300, 100))
 
