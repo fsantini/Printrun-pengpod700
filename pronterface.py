@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Printrun.  If not, see <http://www.gnu.org/licenses/>.
 
+import argparse
 import os, Queue, re
 
 from printrun.printrun_utils import install_locale
@@ -1688,10 +1689,23 @@ class PronterWindow(MainWindow, pronsole.pronsole):
         return bdl_float
 
 if __name__ == '__main__':
+    
+    fullscreen = False
+    if '-fs' in sys.argv:
+        sys.argv.remove('-fs')
+        fullscreen = True
+    
+    if '--fullscreen' in sys.argv:
+        sys.argv.remove('--fullscreen')
+        fullscreen = True
+
     app = wx.App(False)
     main = PronterWindow()
-    main.Show()
-    #main.ShowFullScreen(True)
+    if fullscreen:
+        main.ShowFullScreen(True)
+    else:
+        main.Show()
+        
     try:
         app.MainLoop()
     except:
